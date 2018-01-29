@@ -11,7 +11,7 @@ Configuration:
     - name: log.level.faq
       value: trace
     - name: log.path
-      value: G:/faq/logs
+      value: ../faq/logs
     - name: project.name
       value: faq-robot
   Appenders:
