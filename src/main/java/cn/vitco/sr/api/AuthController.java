@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
+ * 授权 API 接口
  * Created by Sterling on 2018/1/29.
  */
 @RestController
@@ -20,10 +21,10 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @RequestMapping("/auth")
-    public JsonResult auth(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, String> map){
+    public JsonResult auth(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, String> map){
 
         String key = map.get("key");
-        if(key!=null && !key.isEmpty()) {
+        if(key!=null && key!="") {
             log.debug(key);
         }
 
