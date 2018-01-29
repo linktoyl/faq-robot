@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vitco.sr.entity.FAQ_Moudle">
+	<!-- 获取所有的模块 -->
+	<select id="getAllMoudle" resultType="FAQ_Moudle">
+		SELECT moudle_id, moudle_name, bz FROM faq_moudle_dm
+	</select>
+</mapper>
