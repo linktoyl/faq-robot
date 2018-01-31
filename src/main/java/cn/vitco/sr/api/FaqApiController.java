@@ -4,8 +4,13 @@ import cn.vitco.sr.entity.FAQ_Buss;
 import cn.vitco.sr.entity.FAQ_Jc;
 import cn.vitco.sr.entity.FAQ_Moudle;
 import cn.vitco.sr.entity.FAQ_SR_QA;
+import cn.vitco.sr.lucene.LuceneServer;
 import cn.vitco.sr.mapper.FAQ_MoudleMapper;
 import cn.vitco.sr.mapper.FAQ_QAMapper;
+import cn.vitco.sr.pkg.PkgHandler;
+import cn.vitco.sr.pkg.entity.QAPkg;
+import cn.vitco.sr.pkg.entity.RespPkg;
+import cn.vitco.sr.pkg.exception.QAPkgFormatException;
 import cn.vitco.sr.web.result.JsonResult;
 import cn.vitco.sr.web.result.ResultCode;
 import org.slf4j.Logger;
@@ -31,6 +36,9 @@ public class FaqApiController {
     private FAQ_MoudleMapper moudleMapper;
     @Autowired
     private FAQ_QAMapper qaMapper;
+    @Autowired
+    private PkgHandler pkgHandler;
+
 
     @GetMapping("moudlelist")
     public JsonResult moudlelist(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, String> map){
@@ -147,6 +155,21 @@ public class FaqApiController {
             }
         }
 
+        return new JsonResult(code, msg, null);
+    }
+
+    @GetMapping("robot")
+    public JsonResult robot(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String, String> map){
+        ResultCode code = ResultCode.SUCCESS;
+        String msg = "成功!";
+        try {
+            QAPkg pkg = QAPkg.format(map);
+            RespPkg respPkg = pkgHandler.handler(pkg);
+            return new JsonResult(code, msg, respPkg);
+        } catch (QAPkgFormatException e) {
+            code = ResultCode.EXCEPTION;
+            msg = e.getMessage();
+        }
         return new JsonResult(code, msg, null);
     }
 
