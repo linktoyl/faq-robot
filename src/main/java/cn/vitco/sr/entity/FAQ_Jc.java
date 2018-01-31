@@ -8,7 +8,7 @@ public class FAQ_Jc {
     private String jc_dm;
     private String jc_name;
     private String buss_id;
-    private String pre_jc_id;
+    private String pre_jc_dm;
     private String bz;
 
     public String getJc_dm() {
@@ -35,12 +35,12 @@ public class FAQ_Jc {
         this.buss_id = buss_id;
     }
 
-    public String getPre_jc_id() {
-        return pre_jc_id;
+    public String getPre_jc_dm() {
+        return pre_jc_dm;
     }
 
-    public void setPre_jc_id(String pre_jc_id) {
-        this.pre_jc_id = pre_jc_id;
+    public void setPre_jc_dm(String pre_jc_dm) {
+        this.pre_jc_dm = pre_jc_dm;
     }
 
     public String getBz() {

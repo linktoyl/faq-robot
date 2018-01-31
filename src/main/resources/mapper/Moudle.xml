@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.vitco.sr.entity.FAQ_Moudle">
-	<!-- 获取所有的模块 -->
+<mapper namespace="cn.vitco.sr.mapper.FAQ_MoudleMapper">
+	<!-- 获取 moudle 列表 -->
 	<select id="getAllMoudle" resultType="FAQ_Moudle">
 		SELECT moudle_id, moudle_name, bz FROM faq_moudle_dm
+	</select>
+
+	<!-- 获取 buss 列表 -->
+	<select id="getAllBuss" parameterType="String" resultType="FAQ_Buss">
+		SELECT buss_id, buss_name, moudle_id, bz FROM faq_buss_dm
+		<if test="moudle_id != null and moudle_id != ''">
+			WHERE moudle_id=#{moudle_id}
+		</if>
+	</select>
+	<!-- 获取 jc 列表 -->
+	<select id="getAllJc" parameterType="String" resultType="FAQ_Jc">
+		SELECT jc_dm, jc_name, buss_id, pre_jc_dm, bz
+		  FROM faq_jc_dm
+		 WHERE 1=1
+		 <if test="buss_id != null and buss_id != ''">
+		 	and bussid=#{buss_id}
+		 </if>
+		<if test="jc_dm != null and jc_dm != ''">
+			and pre_jc_dm=#{jc_dm}
+		</if>
 	</select>
 </mapper>

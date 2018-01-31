@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.vitco.sr.mapper.FAQ_QAMapper">
+	<!-- 获取 moudle 列表 -->
+	<select id="getQAList" parameterType="String" resultType="FAQ_SR_QA">
+		SELECT qa_id, jc_dm, key_s, question, answer, access_count, weight, bz
+		  FROM faq_sr_qa
+		 WHERE 1=1
+		 <if test="jc_dm != null and jc_dm !=''">
+		 	and jc_dm=#{jc_dm}
+		 </if>
+	</select>
+	<!-- 更新QA -->
+	<update id="updateQA" parameterType="Map">
+		UPDATE faq_sr_qa SET qa_id = #{qa_id}
+		<if test="jc_dm != null and jc_dm != ''">
+			,jc_dm = #{jc_dm}
+		</if>
+		<if test="key_s != null and key_s != ''">
+			,key_s = #{key_s}
+		</if>
+		<if test="question != null and question != ''">
+			,question = #{question}
+		</if>
+		<if test="answer != null and answer != ''">
+			,answer = #{answer}
+		</if>
+		WHERE qa_id = #{qa_id}
+	</update>
+	<!-- 新增QA -->
+	<insert id="addQA" parameterType="Map">
+		INSERT INTO faq_sr_qa(jc_dm, key_s, question, answer)
+		<choose>
+			<when test="key_s != null">
+				VALUES (#{jc_dm}, #{key_s}, #{question}, #{answer})
+			</when>
+			<otherwise>
+				VALUES (#{jc_dm}, '', #{question}, #{answer})
+			</otherwise>
+		</choose>
+
+	</insert>
+</mapper>

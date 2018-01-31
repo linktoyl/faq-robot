@@ -5,8 +5,8 @@ package cn.vitco.sr.entity;
  */
 public class FAQ_SR_QA {
     private String qa_id;
-    private String jc_id;
-    private String keys;
+    private String jc_dm;
+    private String key_s;
     private String question;
     private String answer;
     private int access_count;
@@ -21,20 +21,20 @@ public class FAQ_SR_QA {
         this.qa_id = qa_id;
     }
 
-    public String getJc_id() {
-        return jc_id;
+    public String getJc_dm() {
+        return jc_dm;
     }
 
-    public void setJc_id(String jc_id) {
-        this.jc_id = jc_id;
+    public void setJc_dm(String jc_dm) {
+        this.jc_dm = jc_dm;
     }
 
-    public String getKeys() {
-        return keys;
+    public String getKey_s() {
+        return key_s;
     }
 
-    public void setKeys(String keys) {
-        this.keys = keys;
+    public void setKey_s(String key_s) {
+        this.key_s = key_s;
     }
 
     public String getQuestion() {

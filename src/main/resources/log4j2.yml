@@ -34,11 +34,11 @@ Configuration:
         filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
         PatternLayout:
           pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"
+        DefaultRolloverStrategy:
+          max: 1000
         Policies:
           SizeBasedTriggeringPolicy:
             size: "128 MB"
-          DefaultRolloverStrategy:
-            max: 1000
   Loggers:
     Root:
       level: info
