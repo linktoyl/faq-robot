@@ -40,6 +40,7 @@ public class FaqRobotApplication implements ApplicationListener<ContextRefreshed
 			log.info("启动后执行: 加载Lucene索引.");
 			List<FAQ_SR_QA> list = faq_qaMapper.getQAList("");
 			luceneServer.createIndex(list);
+			log.info("启动 加载Lucene索引 完成.");
 		}else{
 			log.info("启动后执行: Lucene索引已经存在.");
 		}

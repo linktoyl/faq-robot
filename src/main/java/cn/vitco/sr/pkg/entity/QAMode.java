@@ -5,9 +5,10 @@ package cn.vitco.sr.pkg.entity;
  */
 public enum QAMode {
 
+    welcome("进入模式","welcome"),
     reply("对答模式", "reply"),
     hot("热点模式","hot"),
-    cue("热点模式","cue"),
+    cue("线索列表模式","cue"),
     assess("评价模式","assess");
 
     private String msg;

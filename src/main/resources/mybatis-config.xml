@@ -14,11 +14,17 @@
 		<typeAlias type="cn.vitco.sr.entity.FAQ_Buss" alias="FAQ_Buss"/>
 		<typeAlias type="cn.vitco.sr.entity.FAQ_Jc" alias="FAQ_Jc"/>
 		<typeAlias type="cn.vitco.sr.entity.FAQ_SR_QA" alias="FAQ_SR_QA"/>
-		
-
-		
+		<typeAlias type="cn.vitco.sr.entity.QAssess" alias="QAssess"/>
+		<!-- 分页 -->
+		<typeAlias type="cn.vitco.mybatis.entity.Page" alias="Page" />
 	</typeAliases>
-	
+	<!-- 分页插件 -->
+	<plugins>
+		<plugin interceptor="cn.vitco.mybatis.plugin.PagingPlugin">
+			<property name="dialect" value="mysql"/>
+			<property name="pageSqlId" value=".*listPage.*"/>
+		</plugin>
+	</plugins>
 
 	
 </configuration>

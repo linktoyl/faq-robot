@@ -2,7 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.vitco.sr.mapper.FAQ_QAMapper">
-	<!-- 获取 moudle 列表 -->
+
+	<!-- 获取QA 设置 -->
+	<select id="getQASetting" parameterType="String" resultType="String">
+		SELECT setting_value FROM faq_setting WHERE setting_key=#{setting_key} limit 1
+	</select>
+	<!-- 获取 QA 列表 -->
 	<select id="getQAList" parameterType="String" resultType="FAQ_SR_QA">
 		SELECT qa_id, jc_dm, key_s, question, answer, access_count, weight, bz
 		  FROM faq_sr_qa
@@ -11,6 +16,17 @@
 		 	and jc_dm=#{jc_dm}
 		 </if>
 	</select>
+
+	<!-- 获取 QA 列表  分页 -->
+	<select id="listPageQA" parameterType="Page" resultType="FAQ_SR_QA">
+		SELECT qa_id, jc_dm, key_s, question, answer, access_count, weight, bz
+		FROM faq_sr_qa
+		WHERE 1=1
+		<if test="params.jcDM != null and params.jcDM !=''">
+			and jc_dm=#{params.jcDM}
+		</if>
+	</select>
+
 	<!-- 更新QA -->
 	<update id="updateQA" parameterType="Map">
 		UPDATE faq_sr_qa SET qa_id = #{qa_id}
@@ -26,19 +42,32 @@
 		<if test="answer != null and answer != ''">
 			,answer = #{answer}
 		</if>
+		,update_time=CURRENT_TIMESTAMP
 		WHERE qa_id = #{qa_id}
 	</update>
 	<!-- 新增QA -->
-	<insert id="addQA" parameterType="Map">
-		INSERT INTO faq_sr_qa(jc_dm, key_s, question, answer)
+	<insert id="addQA" parameterType="Map" useGeneratedKeys="true" keyProperty="qa_id">
+		INSERT INTO faq_sr_qa(qa_id,jc_dm, key_s, question, answer)
 		<choose>
 			<when test="key_s != null">
-				VALUES (#{jc_dm}, #{key_s}, #{question}, #{answer})
+				VALUES (#{qa_id},#{jc_dm}, #{key_s}, #{question}, #{answer})
 			</when>
 			<otherwise>
-				VALUES (#{jc_dm}, '', #{question}, #{answer})
+				VALUES (#{qa_id},#{jc_dm}, '', #{question}, #{answer})
 			</otherwise>
 		</choose>
+	</insert>
+	<!-- 添加QA访问次数 -->
+	<update id="addAccess" parameterType="String">
+		UPDATE faq_sr_qa SET access_count=access_count+1 WHERE qa_id=#{qa_id}
+	</update>
+	<!-- 添加评价 -->
+	<insert id="addAssess" parameterType="QAssess">
+		INSERT INTO faq_assess_log(qa_id, user_id, assess, in_key)
+		VALUES (#{qa_id}, #{user_id}, #{assess}, #{in_key})
+	</insert>
 
+	<insert id="addInLog" parameterType="String">
+		INSERT INTO faq_in_log(in_keys) values(#{instr})
 	</insert>
 </mapper>

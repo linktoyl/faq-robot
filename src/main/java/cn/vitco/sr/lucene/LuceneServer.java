@@ -3,6 +3,7 @@ package cn.vitco.sr.lucene;
 import cn.vitco.sr.api.AuthController;
 import cn.vitco.sr.config.LuceneConfig;
 import cn.vitco.sr.entity.FAQ_SR_QA;
+import cn.vitco.sr.pkg.entity.RespAnswer;
 import cn.vitco.sr.pkg.entity.RespQuestion;
 import com.chenlb.mmseg4j.analysis.ComplexAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
@@ -29,10 +30,11 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * lucene索引加载器
- *
+ * <p>
  * Created by Sterling on 2018/1/31.
  */
 @Component
@@ -58,32 +60,43 @@ public class LuceneServer {
         analyzer = new ComplexAnalyzer();
     }
 
-    public void createIndex(List<FAQ_SR_QA> ltpcs){
+    /**
+     * 创建索引
+     *
+     * @param ltpcs
+     */
+    public void createIndex(List<FAQ_SR_QA> ltpcs) {
 
         IndexWriterConfig iwconfig = new IndexWriterConfig(analyzer);
-        iwconfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        iwconfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         IndexWriter iw = null;
 
-        try{
+        try {
             iw = new IndexWriter(dir, iwconfig);
-            for (FAQ_SR_QA tpc:ltpcs) {
+            for (FAQ_SR_QA tpc : ltpcs) {
                 Document doc = new Document();
                 doc.add(new TextField("qa_id", tpc.getQa_id(), Field.Store.YES));
                 doc.add(new TextField("keyword", tpc.getKey_s(), Field.Store.YES));
                 doc.add(new TextField("question", tpc.getQuestion(), Field.Store.YES));
                 doc.add(new TextField("answer", tpc.getAnswer(), Field.Store.YES));
-                //iw.addDocument(doc);
-                iw.updateDocument(new Term("question", tpc.getQuestion()), doc);
+                iw.addDocument(doc);
+                //iw.updateDocument(new Term("question", tpc.getQuestion()), doc);
             }
             iw.commit();
             iw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    public List<RespQuestion> queryQuestion(String querykey, int cnt){
+    /**
+     * 根据qa_id 查询
+     *
+     * @param querykey
+     * @param cnt
+     * @return
+     */
+    public List<RespQuestion> queryQuestion(String querykey, int cnt) {
         List<RespQuestion> list = new ArrayList<RespQuestion>();
         try {
             IndexReader ir = DirectoryReader.open(dir);
@@ -98,8 +111,8 @@ public class LuceneServer {
             // 碰撞结果
             ScoreDoc[] hits = topDocs.scoreDocs;
 
-            if(hits!=null && hits.length>0){
-                for (int i=0; i<hits.length; i++) {
+            if (hits != null && hits.length > 0) {
+                for (int i = 0; i < hits.length; i++) {
                     Document hitDoc = searcher.doc(hits[i].doc);
                     list.add(new RespQuestion(hitDoc.get("qa_id"), hitDoc.get("question")));
                 }
@@ -122,8 +135,14 @@ public class LuceneServer {
         return list;
     }
 
-    public String queryIndex(String querykey) {
-        String result = "未找到结果!";
+    /**
+     * 根据 关键词 查询
+     *
+     * @param querykey
+     * @return
+     */
+    public RespAnswer queryIndex(String querykey) {
+        RespAnswer result = null;
         try {
             IndexReader ir = DirectoryReader.open(dir);
             // 搜索器
@@ -136,10 +155,10 @@ public class LuceneServer {
 
             // 碰撞结果
             ScoreDoc[] hits = topDocs.scoreDocs;
-            System.out.println("匹配个数:" +hits.length);
-            if(hits!=null && hits.length>0){
+            System.out.println("匹配个数:" + hits.length);
+            if (hits != null && hits.length > 0) {
                 Document hitDoc = searcher.doc(hits[0].doc);
-                result = hitDoc.get("answer");
+                result = new RespAnswer(hitDoc.get("qa_id"), hitDoc.get("answer"));
             }
             /*for (int i = 0; i < hits.length; i++) {
                 ScoreDoc hit = hits[i];
@@ -158,5 +177,49 @@ public class LuceneServer {
         }
         return result;
     }
+
+    /**
+     * 新增或更新 索引
+     *
+     * @param qa_id
+     * @param map
+     * @return
+     */
+    public Boolean updateIndex(String qa_id, Map<String, Object> map, int type) {
+        IndexWriterConfig iwconfig = new IndexWriterConfig(analyzer);
+        iwconfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+
+
+        IndexWriter iw = null;
+
+        try {
+            iw = new IndexWriter(dir, iwconfig);
+            Document doc = new Document();
+            String keyWord = (String) map.get("keyword");
+            String question = (String) map.get("question");
+            String answer = (String) map.get("answer");
+            if (keyWord != null && !keyWord.isEmpty()) {
+                doc.add(new TextField("keyword", keyWord, Field.Store.YES));
+            }
+            if (question != null && !question.isEmpty()) {
+                doc.add(new TextField("question", question, Field.Store.YES));
+            }
+            if (answer != null && !answer.isEmpty()) {
+                doc.add(new TextField("answer", answer, Field.Store.YES));
+            }
+            if(type == 0) {
+                doc.add(new TextField("qa_id", qa_id, Field.Store.YES));
+                iw.addDocument(doc);
+            }else{
+                iw.updateDocument(new Term("qa_id", qa_id), doc);
+            }
+            iw.commit();
+            iw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
 
 }

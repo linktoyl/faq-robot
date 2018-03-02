@@ -21,4 +21,5 @@ spring:
 
 lucene:
   indexPath: ../lidx/data
-  runMode: noload
+  # noload    reload 两种模式
+  runMode: reload
