@@ -49,7 +49,7 @@ public class PkgHandler {
             case hot:
                 break;
             case cue:
-                List<RespQuestion> res = luceneServer.queryQuestion(pkg.getContent().toString(),6);
+                List<RespQuestion> res = luceneServer.queryQuestion(pkg.getContent().toString(),10);
                 String tit = faqQaMapper.getQASetting(QASettingKeys.CUE_TITLE.value());
                 String end = faqQaMapper.getQASetting(QASettingKeys.CUE_END.value());
                 Map<String, Object> datas = new HashMap<>();
